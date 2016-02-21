@@ -1,0 +1,22 @@
+{
+  "name": "cache-manager-mongoose",
+  "version": "0.0.1",
+  "description": "mongoose store for node-cache-manager",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "cache-manager": "^1.4.0",
+    "chai": "^3.5.0",
+    "mocha": "^2.4.5",
+    "mongoose-mock": "^0.4.0",
+    "proxyquire": "^1.7.4",
+    "sinon": "^1.17.3"
+  },
+  "dependencies": {
+    "mongoose": "^4.4.4"
+  }
+}
