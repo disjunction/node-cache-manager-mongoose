@@ -1,3 +1,4 @@
+/* eslint-env mocha */
 "use strict";
 
 let mongoose = require("mongoose-mock"),
@@ -40,15 +41,51 @@ describe("cache-manager-mongoose", function() {
         expect(cache.store.model).not.to.be.undefined;
     });
 
-    it("set saves key, value, expires record", sinon.test(function(done) {
+    it("set calls update", sinon.test(function(done) {
         let cache = cm.caching({
             store: cmm,
             model: modelStub
         });
-        cache.set("someKey", "someValue", null, function (err, result) {
+        let spy = this.stub(modelStub, "update");
+        cache.set("someKey", "someValue", null, function () {
+            sinon.assert.calledOnce(spy);
             done();
         });
-        let updateSpy = sinon.stub(modelStub, "update");
-        sinon.assert.calledOnce(updateSpy);
+    }));
+
+    it("get calls findOne", sinon.test(function(done) {
+        let cache = cm.caching({
+            store: cmm,
+            model: modelStub
+        });
+        let spy = this.stub(modelStub, "findOne");
+        cache.get("someKey", null, function () {
+            sinon.assert.calledOnce(spy);
+            done();
+        });
+    }));
+
+    it("del calls remove", sinon.test(function(done) {
+        let cache = cm.caching({
+            store: cmm,
+            model: modelStub
+        });
+        let spy = this.stub(modelStub, "remove");
+        cache.del("someKey", null, function () {
+            sinon.assert.calledOnce(spy);
+            done();
+        });
+    }));
+
+    it("reset calls remove", sinon.test(function(done) {
+        let cache = cm.caching({
+            store: cmm,
+            model: modelStub
+        });
+        let spy = this.stub(modelStub, "remove");
+        cache.reset(function () {
+            sinon.assert.calledOnce(spy);
+            done();
+        });
     }));
 });

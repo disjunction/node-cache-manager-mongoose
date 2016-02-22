@@ -11,6 +11,7 @@
   "devDependencies": {
     "cache-manager": "^1.4.0",
     "chai": "^3.5.0",
+    "eslint": "^1.10.3",
     "mocha": "^2.4.5",
     "mongoose-mock": "^0.4.0",
     "proxyquire": "^1.7.4",
