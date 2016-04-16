@@ -4,10 +4,13 @@ class MongooseStoreError extends Error {}
 
 class MongooseStore {
     constructor(args) {
-        if (!args) {
-            args = {};
+        if (!args || !(args.mongoose || args.model)) {
+            throw new MongooseStoreError(
+                "you MUST provide either mongoose or model instance in store args"
+            );
         }
-        this.mongoose = args.mongoose || require("mongoose");
+
+        this.mongoose = args.mongoose;
 
         if (args.model) {
             switch (typeof args.model) {
@@ -31,10 +34,10 @@ class MongooseStore {
             obj: {
                 _id: String,
                 val: this.mongoose.Schema.Types.Mixed,
-                exp: Number
+                exp: Date
             },
             options: {
-                collection: "cacheman",
+                collection: "MongooseCache",
                 versionKey: false
             }
         };
@@ -45,8 +48,12 @@ class MongooseStore {
             options
         );
 
-        let model = this.mongoose.model(args.model || "MongooseCache", schema);
-        return model;
+        schema.index(
+            {exp: 1},
+            {expireAfterSeconds: 0}
+        );
+
+        return this.mongoose.model(args.modelName || "MongooseCache", schema);
     }
 
     result(fn, error, result) {
@@ -64,7 +71,9 @@ class MongooseStore {
                 if (!record) {
                     return this.result(fn);
                 }
-                if (record.exp < Date.now()) {
+
+                // this is necessary, since mongoose autoclean is not accurate
+                if (record.exp < new Date()) {
                     return this.del(key, null, fn);
                 } else {
                     return this.result(fn, null, record.val);
@@ -85,7 +94,7 @@ class MongooseStore {
                 {_id: key},
                 {
                     val: val,
-                    exp: Date.now() + ttl * 1000
+                    exp: new Date(Date.now() + ttl * 1000)
                 },
                 {upsert: true}
             )
@@ -113,7 +122,12 @@ class MongooseStore {
                 fn = key;
                 key = null;
             }
-            return this.model.remove({}).then(() => fn());
+            return this.model.remove({})
+                .then(() => {
+                    if (fn) {
+                        fn();
+                    }
+                });
         } catch (e) {
             this.result(fn, e);
         }

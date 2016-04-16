@@ -2,8 +2,7 @@
 "use strict";
 
 let mongoose = require("mongoose-mock"),
-    proxyquire = require("proxyquire"),
-    cmm = proxyquire("../src/index", {mongoose: mongoose}),
+    cmm = require("../src/index"),
     cm = require("cache-manager"),
     sinon = require("sinon"),
     expect = require("chai").expect;
@@ -28,7 +27,8 @@ describe("cache-manager-mongoose", function() {
         this.stub(mongoose, "model").returns({dummyField: true});
         let cache = cm.caching({
             store: cmm,
-            model: "dummyModel"
+            modelName: "dummyModel",
+            mongoose: mongoose
         });
         sinon.assert.calledOnce(mongoose.model);
         expect(cache.store.model.dummyField).to.be.true;
@@ -36,7 +36,8 @@ describe("cache-manager-mongoose", function() {
 
     it("creates new model if model not provided", function() {
         let cache = cm.caching({
-            store: cmm
+            store: cmm,
+            mongoose: mongoose
         });
         expect(cache.store.model).not.to.be.undefined;
     });
