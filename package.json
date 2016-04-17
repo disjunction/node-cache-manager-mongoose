@@ -6,6 +6,11 @@
   "scripts": {
     "test": "./node_modules/.bin/mocha"
   },
+  "keywords": [
+    "cache",
+    "mongoose",
+    "cache manager"
+  ],
   "author": "Konstantin Pogorelov <or@pluseq.com>",
   "license": "WTFPL",
   "repository": {
