@@ -1,4 +1,4 @@
-[![build status](https://api.travis-ci.org/disjunction/node-cache-manager-mongoose.png)](https://travis-ci.org/disjunction/node-cache-manager-mongoose)
+[![build status](https://api.travis-ci.org/disjunction/node-cache-manager-mongoose.png)](https://travis-ci.org/disjunction/node-cache-manager-mongoose) [![NPM version](https://badge.fury.io/js/cache-manager-mongoose.png)](http://badge.fury.io/js/cache-manager-mongoose)
 
 # cache-manager-mongoose
 
@@ -20,12 +20,12 @@ but it rather assumes that you already have one and use it in your project.
 const
     mongoose = require("mongoose"),
     cacheManager = require("cache-manager"),
-    store = require("cache-manager-mongoose");
+    mongooseStore = require("cache-manager-mongoose");
 
 mongoose.connect("mongodb://127.0.0.1/test");
 
 const cache = cacheManager.caching({
-    store: store,
+    store: mongooseStore,
     mongoose: mongoose
 });
 
@@ -35,28 +35,29 @@ const cache = cacheManager.caching({
 
 ### Options
 
-mongoose store creates a new Model on initialization, which
-you can customize as follows:
+All optionas are **optional**, except for `mongoose` instance.
+
+The store creates a new Model on initialization, which you can partially customize. See example:
 
 ```javascript
 const cache = cacheManager.caching({
-    store: store,
-    mongoose: mongoose,
-    modelName: "MyModelName",
+    store: mongooseStore,
+    mongoose: mongoose, // mongoose instance
+    modelName: "MyModelName", // model name in mongoose registry
+    
+    // options for model creation
     modelOptions: {
         collection: "cacheman_rcp" // mongodb collection name
-        versionKey: true
-    }
+        versionKey: false // do not create __v field
+    },
+
+    ttl: 300 // time to live - 5 minutes (default is 1 minute)
 });
 ```
 
-`modelName` specifies which name will be registered in mongoose
+If you want to keep your cache **forever**, set TTL to zero (`0`)
 
-The `modelOptions` represents the options used when creating
-the Schema for the new model. You can refer to mongoose docs
-for more options.
-
-The default ones are:
+The default modelOptions are:
 ```json
 {
     "collection": "MongooseCache",
@@ -69,7 +70,7 @@ The default ones are:
 You can also provide your own model as long as it has the same
 fields as the one used by default.
 
-In this case you don't need to provide a mongoose instance,
+In this case you don't need to provide a `mongoose` instance,
 as all it boils down to is a model object.
 
 Here is an example:
@@ -101,7 +102,7 @@ schema.index({foo: 1});
 const model = mongoose.model("MyModel", schema);
 
 const cache = cacheManager.caching({
-    store: store,
+    store: mongooseStore,
     model: model
 });
 ```
