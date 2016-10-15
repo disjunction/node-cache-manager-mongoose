@@ -15,6 +15,22 @@ describe("cache-manager-mongoose", function() {
         remove: () => Promise.resolve()
     };
 
+    it("throws on no mongoose provided", function() {
+        expect(() => {
+            cm.caching({store: cmm});
+        }).to.throw();
+    });
+
+    it("throws on strange model type", function() {
+        expect(() => {
+            cm.caching({
+                store: cmm,
+                mongoose: mongoose,
+                model: true
+            });
+        }).to.throw();
+    });
+
     it("accepts model passed directly", function() {
         let cache = cm.caching({
             store: cmm,
@@ -22,6 +38,16 @@ describe("cache-manager-mongoose", function() {
         });
         expect(cache.store.model.testProp).to.be.true;
     });
+
+    it("accepts model passed by name", sinon.test(function() {
+        this.stub(mongoose, "model").returns(modelStub);
+        let cache = cm.caching({
+            store: cmm,
+            mongoose: mongoose,
+            model: "MyModel"
+        });
+        expect(cache.store.model.testProp).to.be.true;
+    }));
 
     it("finds model if passed as string", sinon.test(function() {
         this.stub(mongoose, "model").returns({dummyField: true});
@@ -46,6 +72,19 @@ describe("cache-manager-mongoose", function() {
         let cache = cm.caching({
             store: cmm,
             model: modelStub
+        });
+        let spy = this.stub(modelStub, "update");
+        cache.set("someKey", "someValue", null, function () {
+            sinon.assert.calledOnce(spy);
+            done();
+        });
+    }));
+
+    it("set supports infinite ttl", sinon.test(function(done) {
+        let cache = cm.caching({
+            store: cmm,
+            model: modelStub,
+            ttl: 0
         });
         let spy = this.stub(modelStub, "update");
         cache.set("someKey", "someValue", null, function () {

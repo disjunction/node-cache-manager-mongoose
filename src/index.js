@@ -26,7 +26,7 @@ class MongooseStore {
         } else {
             this.model = this.makeModel(args);
         }
-        this.ttl = args.ttl || 60;
+        this.ttl = args.ttl === undefined ? 60 : args.ttl;
     }
 
     makeModel(args) {
@@ -73,7 +73,7 @@ class MongooseStore {
                 }
 
                 // this is necessary, since mongoose autoclean is not accurate
-                if (record.exp < new Date()) {
+                if (record.exp && record.exp < new Date()) {
                     return this.del(key, null, fn);
                 } else {
                     return this.result(fn, null, record.val);
@@ -90,12 +90,14 @@ class MongooseStore {
             options = options || {};
             let ttl = options.ttl || this.ttl;
             
+            const doc = {val: val};
+            if (this.ttl > 0) {
+                doc.exp = new Date(Date.now() + ttl * 1000);
+            }
+
             return this.model.update(
                 {_id: key},
-                {
-                    val: val,
-                    exp: new Date(Date.now() + ttl * 1000)
-                },
+                doc,
                 {upsert: true}
             )
             .then(() => this.result(fn))
