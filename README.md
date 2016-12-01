@@ -44,14 +44,16 @@ const cache = cacheManager.caching({
     store: mongooseStore,
     mongoose: mongoose, // mongoose instance
     modelName: "MyModelName", // model name in mongoose registry
-    
+
     // options for model creation
     modelOptions: {
         collection: "cacheman_rcp" // mongodb collection name
         versionKey: false // do not create __v field
     },
 
-    ttl: 300 // time to live - 5 minutes (default is 1 minute)
+    ttl: 300 // time to live - 5 minutes (default is 1 minute),
+
+    connection: connection, // provide only when using mongoose.createConnection()
 });
 ```
 
@@ -61,7 +63,8 @@ The default modelOptions are:
 ```json
 {
     "collection": "MongooseCache",
-    "versionKey": false
+    "versionKey": false,
+    "read": "secondaryPreferred"
 }
 ```
 

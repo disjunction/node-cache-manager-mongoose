@@ -11,6 +11,7 @@ class MongooseStore {
         }
 
         this.mongoose = args.mongoose;
+        this.modelProvider = args.connection || args.mongoose;
 
         if (args.model) {
             switch (typeof args.model) {
@@ -18,7 +19,7 @@ class MongooseStore {
                     this.model = args.model;
                     break;
                 case "string":
-                    this.model = this.mongoose.model(args.model);
+                    this.model = this.modelProvider.model(args.model);
                     break;
                 default:
                     throw new MongooseStoreError("unexpected type of args.model in constructor");
@@ -38,7 +39,8 @@ class MongooseStore {
             },
             options: {
                 collection: "MongooseCache",
-                versionKey: false
+                versionKey: false,
+                read: "secondaryPreferred"
             }
         };
 
@@ -53,7 +55,7 @@ class MongooseStore {
             {expireAfterSeconds: 0}
         );
 
-        return this.mongoose.model(args.modelName || "MongooseCache", schema);
+        return this.modelProvider.model(args.modelName || "MongooseCache", schema);
     }
 
     result(fn, error, result) {
@@ -89,7 +91,7 @@ class MongooseStore {
         try {
             options = options || {};
             let ttl = options.ttl || this.ttl;
-            
+
             const doc = {val: val};
             if (this.ttl > 0) {
                 doc.exp = new Date(Date.now() + ttl * 1000);
