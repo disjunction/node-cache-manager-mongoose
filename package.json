@@ -18,10 +18,10 @@
     "url": "https://github.com/disjunction/node-cache-manager-mongoose.git"
   },
   "devDependencies": {
-    "cache-manager": "^1.4.0",
+    "cache-manager": "^2.2.0",
     "chai": "^3.5.0",
-    "eslint": "^1.10.3",
-    "mocha": "^2.4.5",
+    "eslint": "^3.11.1",
+    "mocha": "^3.2.0",
     "mongoose-mock": "^0.4.0",
     "sinon": "^1.17.3"
   }

@@ -30,7 +30,6 @@
         "no-var": 2,
 
         "no-multi-spaces": 1,
-        "space-return-throw-case": 1,
         "space-infix-ops": [1, {"int32Hint": false}],
         "brace-style": 1,
         "space-before-blocks": 1,
