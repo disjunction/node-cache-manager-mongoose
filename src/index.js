@@ -122,15 +122,11 @@ class MongooseStore {
 
     reset(key, fn) {
         try {
-            let query = {};
             if ("function" === typeof key) {
                 fn = key;
                 key = null;
             }
-            if (key) {
-                query = { _id: { $regex: new RegExp('^' + key, 'i') } };
-            }
-            return this.model.remove(query)
+            return this.model.remove({})
                 .then(() => {
                     if (fn) {
                         fn();
