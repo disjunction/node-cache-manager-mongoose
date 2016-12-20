@@ -122,17 +122,45 @@ class MongooseStore {
 
     reset(key, fn) {
         try {
+            let query = {};
             if ("function" === typeof key) {
                 fn = key;
                 key = null;
             }
-            return this.model.remove({})
+            if (key) {
+                query = { _id: { $regex: new RegExp('^' + key, 'i') } };
+            }
+            return this.model.remove(query)
                 .then(() => {
                     if (fn) {
                         fn();
                     }
                 });
         } catch (e) {
+            this.result(fn, e);
+        }
+    }
+
+    keys(fn) {
+        try {
+            return this.model
+                .find({})
+                .then(records => {
+                    if (!records) {
+                        return this.result(fn, 'no records');
+                    }
+
+                    records = records.filter(function(record) {
+                        return (record.exp && record.exp > new Date())
+                    }).map(function(record) {
+                        return record._id;
+                    });
+
+                    this.result(fn, null, records);
+                })
+                .catch(e => this.result(fn, e));
+        }
+        catch (e) {
             this.result(fn, e);
         }
     }
