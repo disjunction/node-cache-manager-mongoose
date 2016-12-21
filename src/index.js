@@ -139,18 +139,14 @@ class MongooseStore {
 
     keys(fn) {
         try {
+            let now = new Date();
+            
             return this.model
                 .find({})
                 .then(records => {
-                    if (!records) {
-                        return this.result(fn, 'no records');
-                    }
-
                     records = records.filter(function(record) {
-                        return (record.exp && record.exp > new Date())
-                    }).map(function(record) {
-                        return record._id;
-                    });
+                        return (record.exp && record.exp > now)
+                    }).map(record => record._id);
 
                     this.result(fn, null, records);
                 })
