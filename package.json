@@ -1,6 +1,6 @@
 {
   "name": "cache-manager-mongoose",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "mongoose store for node-cache-manager",
   "main": "src/index.js",
   "scripts": {

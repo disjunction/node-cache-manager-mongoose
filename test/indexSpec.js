@@ -128,4 +128,21 @@ describe("cache-manager-mongoose", function() {
             done();
         });
     }));
+
+    it("keys calls find", sinon.test(function(done) {
+        let cache = cm.caching({
+            store: cmm,
+            model: modelStub
+        });
+
+        modelStub.find = () => Promise.resolve([
+            {_id: "apple"},
+            {_id: "banana"}
+        ]);
+
+        cache.keys(function(error, keys) {
+            expect(keys).to.deep.eql(["apple", "banana"]);
+            done();
+        });
+    }));
 });
