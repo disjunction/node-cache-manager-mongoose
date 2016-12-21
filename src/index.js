@@ -136,6 +136,26 @@ class MongooseStore {
             this.result(fn, e);
         }
     }
+
+    keys(fn) {
+        try {
+            let now = new Date();
+            
+            return this.model
+                .find({})
+                .then(records => {
+                    records = records.filter(function(record) {
+                        return (record.exp && record.exp > now)
+                    }).map(record => record._id);
+
+                    this.result(fn, null, records);
+                })
+                .catch(e => this.result(fn, e));
+        }
+        catch (e) {
+            this.result(fn, e);
+        }
+    }
 }
 
 module.exports = {
