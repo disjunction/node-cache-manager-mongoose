@@ -10,7 +10,7 @@ let mongoose = require("mongoose-mock"),
 describe("cache-manager-mongoose", function() {
     let modelStub = {
         testProp: true,
-        update: () => Promise.resolve(),
+        updateOne: () => Promise.resolve(),
         findOne: () => Promise.resolve(),
         remove: () => Promise.resolve()
     };
@@ -73,7 +73,7 @@ describe("cache-manager-mongoose", function() {
             store: cmm,
             model: modelStub
         });
-        let spy = this.stub(modelStub, "update");
+        let spy = this.stub(modelStub, "updateOne");
         cache.set("someKey", "someValue", null, function () {
             sinon.assert.calledOnce(spy);
             done();
@@ -86,7 +86,7 @@ describe("cache-manager-mongoose", function() {
             model: modelStub,
             ttl: 0
         });
-        let spy = this.stub(modelStub, "update");
+        let spy = this.stub(modelStub, "updateOne");
         cache.set("someKey", "someValue", null, function () {
             sinon.assert.calledOnce(spy);
             done();
