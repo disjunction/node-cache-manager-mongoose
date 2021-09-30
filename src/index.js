@@ -97,7 +97,7 @@ class MongooseStore {
                 doc.exp = new Date(Date.now() + ttl * 1000);
             }
 
-            return this.model.update(
+            return this.model.updateOne(
                 {_id: key},
                 doc,
                 {upsert: true}
