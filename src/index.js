@@ -111,7 +111,7 @@ class MongooseStore {
 
     del(key, options, fn) {
         try {
-            return this.model.remove(
+            return this.model.deleteOne(
                 {_id: key}
             )
             .then(() => this.result(fn));
@@ -126,7 +126,7 @@ class MongooseStore {
                 fn = key;
                 key = null;
             }
-            return this.model.remove({})
+            return this.model.deleteMany({})
                 .then(() => {
                     if (fn) {
                         fn();
