@@ -12,7 +12,8 @@ describe("cache-manager-mongoose", function() {
         testProp: true,
         updateOne: () => Promise.resolve(),
         findOne: () => Promise.resolve(),
-        remove: () => Promise.resolve()
+        deleteOne: () => Promise.resolve(),
+        deleteMany: () => Promise.resolve()
     };
 
     it("throws on no mongoose provided", function() {
@@ -105,24 +106,24 @@ describe("cache-manager-mongoose", function() {
         });
     }));
 
-    it("del calls remove", sinon.test(function(done) {
+    it("del calls deleteOne", sinon.test(function(done) {
         let cache = cm.caching({
             store: cmm,
             model: modelStub
         });
-        let spy = this.stub(modelStub, "remove");
+        let spy = this.stub(modelStub, "deleteOne");
         cache.del("someKey", null, function () {
             sinon.assert.calledOnce(spy);
             done();
         });
     }));
 
-    it("reset calls remove", sinon.test(function(done) {
+    it("reset calls deleteMany", sinon.test(function(done) {
         let cache = cm.caching({
             store: cmm,
             model: modelStub
         });
-        let spy = this.stub(modelStub, "remove");
+        let spy = this.stub(modelStub, "deleteMany");
         cache.reset(function () {
             sinon.assert.calledOnce(spy);
             done();
