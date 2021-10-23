@@ -1,4 +1,4 @@
-[![build status](https://api.travis-ci.org/disjunction/node-cache-manager-mongoose.png)](https://travis-ci.org/disjunction/node-cache-manager-mongoose) [![NPM version](https://badge.fury.io/js/cache-manager-mongoose.png)](http://badge.fury.io/js/cache-manager-mongoose)
+[![build status](https://api.travis-ci.org/disjunction/node-cache-manager-mongoose.png)](https://travis-ci.org/disjunction/node-cache-manager-mongoose) [![NPM version](https://badge.fury.io/js/cache-manager-mongoose.png)](http://badge.fury.io/js/cache-manager-mongoose) [![Coverage Status](https://coveralls.io/repos/github/disjunction/node-cache-manager-mongoose/badge.svg?branch=master)](https://coveralls.io/github/disjunction/node-cache-manager-mongoose?branch=master)
 
 # cache-manager-mongoose
 
@@ -109,3 +109,9 @@ const cache = cacheManager.caching({
     model: model
 });
 ```
+
+## License
+
+MIT No Attribution
+
+https://github.com/aws/mit-0

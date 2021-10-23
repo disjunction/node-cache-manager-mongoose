@@ -1,11 +1,21 @@
 /* eslint-env mocha */
 "use strict";
 
-let mongoose = require("mongoose-mock"),
+let mongoose = require("mock-mongoose").MockMongoose,
     cmm = require("../src/index"),
     cm = require("cache-manager"),
     sinon = require("sinon"),
+    sinonTest = require("sinon-test"),
     expect = require("chai").expect;
+
+const test = sinonTest(sinon);
+
+// extend mock-mongoose with missing methods
+mongoose.model = () => ({});
+mongoose.Schema = function () {
+    this.index = sinon.stub();
+};
+mongoose.Schema.Types = {};
 
 describe("cache-manager-mongoose", function() {
     let modelStub = {
@@ -40,8 +50,8 @@ describe("cache-manager-mongoose", function() {
         expect(cache.store.model.testProp).to.be.true;
     });
 
-    it("accepts model passed by name", sinon.test(function() {
-        this.stub(mongoose, "model").returns(modelStub);
+    it("accepts model passed by name", test(function() {
+        this.stub(mongoose, "model").callsFake(() => modelStub);
         let cache = cm.caching({
             store: cmm,
             mongoose: mongoose,
@@ -50,7 +60,7 @@ describe("cache-manager-mongoose", function() {
         expect(cache.store.model.testProp).to.be.true;
     }));
 
-    it("finds model if passed as string", sinon.test(function() {
+    it("finds model if passed as string", test(function() {
         this.stub(mongoose, "model").returns({dummyField: true});
         let cache = cm.caching({
             store: cmm,
@@ -69,7 +79,7 @@ describe("cache-manager-mongoose", function() {
         expect(cache.store.model).not.to.be.undefined;
     });
 
-    it("set calls update", sinon.test(function(done) {
+    it("set calls update", test(function(done) {
         let cache = cm.caching({
             store: cmm,
             model: modelStub
@@ -81,7 +91,7 @@ describe("cache-manager-mongoose", function() {
         });
     }));
 
-    it("set supports infinite ttl", sinon.test(function(done) {
+    it("set supports infinite ttl", test(function(done) {
         let cache = cm.caching({
             store: cmm,
             model: modelStub,
@@ -94,7 +104,7 @@ describe("cache-manager-mongoose", function() {
         });
     }));
 
-    it("get calls findOne", sinon.test(function(done) {
+    it("get calls findOne", test(function(done) {
         let cache = cm.caching({
             store: cmm,
             model: modelStub
@@ -106,7 +116,7 @@ describe("cache-manager-mongoose", function() {
         });
     }));
 
-    it("del calls deleteOne", sinon.test(function(done) {
+    it("del calls deleteOne", test(function(done) {
         let cache = cm.caching({
             store: cmm,
             model: modelStub
@@ -118,7 +128,7 @@ describe("cache-manager-mongoose", function() {
         });
     }));
 
-    it("reset calls deleteMany", sinon.test(function(done) {
+    it("reset calls deleteMany", test(function(done) {
         let cache = cm.caching({
             store: cmm,
             model: modelStub
@@ -130,7 +140,7 @@ describe("cache-manager-mongoose", function() {
         });
     }));
 
-    it("keys calls find", sinon.test(function(done) {
+    it("keys calls find", test(function(done) {
         let cache = cm.caching({
             store: cmm,
             model: modelStub

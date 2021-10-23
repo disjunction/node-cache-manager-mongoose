@@ -69,19 +69,19 @@ class MongooseStore {
             return this.model.findOne(
                 {_id: key}
             )
-            .then(record => {
-                if (!record) {
-                    return this.result(fn);
-                }
+                .then(record => {
+                    if (!record) {
+                        return this.result(fn);
+                    }
 
-                // this is necessary, since mongoose autoclean is not accurate
-                if (record.exp && record.exp < new Date()) {
-                    return this.del(key, null, fn);
-                } else {
-                    return this.result(fn, null, record.val);
-                }
-            })
-            .catch(e => this.result(fn, e));
+                    // this is necessary, since mongoose autoclean is not accurate
+                    if (record.exp && record.exp < new Date()) {
+                        return this.del(key, null, fn);
+                    } else {
+                        return this.result(fn, null, record.val);
+                    }
+                })
+                .catch(e => this.result(fn, e));
         } catch (e) {
             this.result(fn, e);
         }
@@ -102,8 +102,8 @@ class MongooseStore {
                 doc,
                 {upsert: true}
             )
-            .then(() => this.result(fn))
-            .catch(e => this.result(fn, e));
+                .then(() => this.result(fn))
+                .catch(e => this.result(fn, e));
         } catch (e) {
             this.result(fn, e);
         }
@@ -114,7 +114,7 @@ class MongooseStore {
             return this.model.deleteOne(
                 {_id: key}
             )
-            .then(() => this.result(fn));
+                .then(() => this.result(fn));
         } catch (e) {
             this.result(fn, e);
         }
