@@ -62,6 +62,7 @@ class MongooseStore {
         if (fn) {
             fn(error, result);
         }
+        return result;
     }
 
     get(key, options, fn) {
